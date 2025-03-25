@@ -1,30 +1,50 @@
-import React, { useState } from "react";
-import UseMemo from "./UseMemo";
-import ReactMemo from "./ReactMemo";
+import React, { useState, useMemo } from "react";
+import ReactMemoComponent from "./ReactMemoComponent";
+import UseMemoComponent from "./UseMemoComponent";
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
+  const [todos, setTodos] = useState([]);
+  const [counter, setCounter] = useState(0);
+  const [input, setInput] = useState("");
 
-  const onAdd = () => {
-    setTasks((prev) => [...prev, "New Todo"]);
+  const addTodo = () => {
+    setTodos([...todos, "New todo"]);
   };
+
+  const addCustomTodo = () => {
+    if (input.length > 5) {
+      setTodos([...todos, input]);
+      setInput("");
+    } else {
+      alert("Task must be more than 5 characters!");
+    }
+  };
+
+  const incrementCounter = () => {
+    setCounter(counter + 1);
+  };
+
+  const memoizedTodos = useMemo(() => todos, [todos]);
+
   return (
-    <div id="main">
-      <h1>React.useMemo</h1>
-      <h2>My todos</h2>
+    <div>
+      <h1>React Performance Optimization</h1>
+      <button onClick={addTodo}>Add Todo</button>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Enter task"
+      />
+      <button onClick={addCustomTodo}>Submit</button>
       <ul>
-        {tasks.map((i, index) => (
-          <li key={index}>{i}</li>
+        {memoizedTodos.map((todo, index) => (
+          <ReactMemoComponent key={index} todo={todo} />
         ))}
       </ul>
-
-      <button onClick={onAdd}>Add Todo</button>
-
-      <hr />
-      <UseMemo />
-      <hr />
-      <hr />
-      <ReactMemo />
+      <button onClick={incrementCounter}>Increment Counter</button>
+      <p>Counter: {counter}</p>
+      <UseMemoComponent counter={counter} />
     </div>
   );
 };
